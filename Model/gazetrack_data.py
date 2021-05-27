@@ -3,13 +3,9 @@ import json
 import os
 import shutil
 from glob import glob
-import dlib
 from torchvision.transforms import Normalize, Resize, Compose, ToTensor
-from torch.utils.data import Dataset
 
-'''
-PyTorch DataLoader for the updated dataset. 
-'''
+from torch.utils.data import Dataset
 
 class gazetrack_dataset(Dataset):
     def __init__(self, root, phase='train', size=(128, 128), transform=True):
@@ -32,14 +28,14 @@ class gazetrack_dataset(Dataset):
             meta = json.load(f)
             
         screen_w, screen_h = meta['screen_w'], meta['screen_h']
-        lx1, ly1, lx2, ly2 = meta['leye_x1'], meta['leye_y1'], meta['leye_x2'], meta['leye_y2']
-        rx1, ry1, rx2, ry2 = meta['reye_x1'], meta['reye_y1'], meta['reye_x2'], meta['reye_y2']
+        lx, ly, lw, lh = meta['leye_x'], meta['leye_y'], meta['leye_w'], meta['leye_h']
+        rx, ry, rw, rh = meta['reye_x'], meta['reye_y'], meta['reye_w'], meta['reye_h']
         
         l_eye = image[max(0, ly):max(0, ly+lh), max(0, lx):max(0, lx+lw)]
         r_eye = image[max(0, ry):max(0, ry+rh), max(0, rx):max(0, rx+rw)]
         l_eye = cv2.flip(l_eye, 1)
-        
-        kps = torch.tensor([lx1, ly1, lx2, ly2, rx1, ry1, rx2, ry2]).float()
+            
+        kps = torch.tensor([lx, ly, (lx+lw), (ly+lh), rx, ry, (rx+rw), (ry+rh)]).float()
         
         out = torch.tensor([meta['dot_xcam'], meta['dot_ycam']]).float()
         
@@ -52,8 +48,8 @@ class gazetrack_dataset(Dataset):
         list_transforms = []
         list_transforms.extend(
             [
-                Resize(size[0], size[1]),
-                Normalize(),
+                Resize(size[0]),
+                Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
                 ToTensor(),
             ]
         )
