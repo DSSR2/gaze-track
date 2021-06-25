@@ -25,3 +25,16 @@
 * Fix the model using inputs from the authors and mentors
 ### Are you blocked on anything?
 * No
+***
+
+## Week 3 (21<sup>st</sup> - 25<sup>th</sup> June 2021)
+
+### What did you do this week?
+* Figured out multi GPU training with PyTorch Lightning
+* Trained MIT CSAIL model for better comparison
+* Improved model accuracy
+### What do you plan to do for next week?
+* Complete data collection app and collect some data
+* Complete testing framework for better understanding model performance
+### Are you blocked on anything?
+* Inputs from the author will hopefully come sometime next week. 
