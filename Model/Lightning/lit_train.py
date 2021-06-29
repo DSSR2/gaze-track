@@ -31,6 +31,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir)
     model = lit_gazetrack_model(args.dataset_dir, args.save_dir)
-    trainer = pl.Trainer(gpus=args.gpus, accelerator="ddp", max_epochs=args.epochs, default_root_dir=args.save_dir, progress_bar_refresh_rate=1, auto_lr_find=True, auto_scale_batch_size=True, callbacks=[checkpoint_callback])
-    trainer.fit(model)
+    trainer = pl.Trainer(gpus=args.gpus, accelerator="ddp", max_epochs=args.epochs, default_root_dir=args.save_dir, progress_bar_refresh_rate=1, auto_lr_find=True, auto_scale_batch_size='binsearch', callbacks=[checkpoint_callback])
+    
+    trainer.tune(model)
     print("DONE")

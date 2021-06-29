@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --time=2-00:00:00
-#SBATCH --gres=gpu:1
+#SBATCH --time=01:00:00
+#SBATCH --gres=gpu:2
 #SBATCH --nodes=1        
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=20
 #SBATCH --mem=90G
-#SBATCH --output=basd.out
+#SBATCH --output=lit_train.out
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export NCCL_BLOCKING_WAIT=1
@@ -24,7 +24,7 @@ pip install pillow pandas tensorboard torch torchvision comet-ml pytorch-lightni
 pip install --upgrade setuptools
 pip install scikit-image imutils tqdm
 
-tar -xf  ~/projects/dssr/dataset_ip6s_kps.tar.gz -C .
+tar -xf  ~/projects/dataset_ip6s_kps.tar.gz -C .
 echo untar done
 ls 
 scp -r  ~/projects/gaze-track/Model/Lightning .
