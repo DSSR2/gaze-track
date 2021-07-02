@@ -59,7 +59,7 @@ class lit_gazetrack_model(pl.LightningModule):
         super(lit_gazetrack_model, self).__init__()
         
         self.lr = 0.001
-        self.batch_size = 1024
+        self.batch_size = 2048
         self.data_path = data_path
         print("Data path: ", data_path)
         self.save_path = save_path

@@ -29,9 +29,9 @@ parser.add_argument('--gpus', default=1, type=int, help='Path store checkpoints'
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir)
+    checkpoint_callback = ModelCheckpoint(dirpath=args.save_dir, filename='{epoch}-{val_loss:.3f}-{train_loss:.3f}', save_top_k=-1)
     model = lit_gazetrack_model(args.dataset_dir, args.save_dir)
-    trainer = pl.Trainer(gpus=args.gpus, accelerator="ddp", max_epochs=args.epochs, default_root_dir=args.save_dir, progress_bar_refresh_rate=1, auto_lr_find=True, auto_scale_batch_size='binsearch', callbacks=[checkpoint_callback])
+    trainer = pl.Trainer(gpus=args.gpus, accelerator="ddp", max_epochs=args.epochs, default_root_dir=args.save_dir, progress_bar_refresh_rate=1, auto_lr_find=True, callbacks=[checkpoint_callback])
     
-    trainer.tune(model)
+    trainer.fit(model)
     print("DONE")

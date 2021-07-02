@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --time=01:00:00
-#SBATCH --gres=gpu:2
+#SBATCH --time=1-00:00:00
+#SBATCH --gres=gpu:1
 #SBATCH --nodes=1        
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=20
+#SBATCH --cpus-per-task=10
 #SBATCH --mem=90G
 #SBATCH --output=lit_train.out
 
@@ -24,13 +24,13 @@ pip install pillow pandas tensorboard torch torchvision comet-ml pytorch-lightni
 pip install --upgrade setuptools
 pip install scikit-image imutils tqdm
 
-tar -xf  ~/projects/dataset_ip6s_kps.tar.gz -C .
+tar -xf  ~/projects/def-skrishna/dssr/gazetrack.tar.gz -C .
 echo untar done
 ls 
-scp -r  ~/projects/gaze-track/Model/Lightning .
+scp -r  ~/projects/def-skrishna/gaze-track/Model/Lightning .
 echo copy done
 
 ls
 cd Lightning
 
-python lit_train.py --dataset_dir ../datasetip6s/ --save_dir ~/projects/dssr/trained_models/lit/ --gpus 2 --epochs 100
+python lit_train.py --dataset_dir ../gazetrack/ --save_dir ~/projects/def-skrishna/dssr/trained_models/new_trial/ --gpus 1 --epochs 100

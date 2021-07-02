@@ -7,7 +7,8 @@ from multiprocessing import Pool, Process
 '''
 Convert MIT Gaze Capture dataset to the one used in "Accelerating eye movement research via accurate and affordable smartphone eye tracking" and prepare data for easy use in PyTorch.
 1. Keep only portrait orientation images
-2. Create metadata file for each image. 
+2. Create metadata file for each image
+4. Split data based on MIT annotation. Separate participants in train, test, val.
 '''
 
 import argparse
