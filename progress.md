@@ -38,3 +38,17 @@
 * Complete testing framework for better understanding model performance
 ### Are you blocked on anything?
 * Inputs from the author will hopefully come sometime next week. 
+
+## Week 4 (28<sup>st</sup> June - 02<sup>nd</sup> July 2021)
+
+### What did you do this week?
+* Received inputs from authors and began incorporation of new methods
+* Better results and testing framework created
+* Setting up Neptune.ai for experiment tracking
+* Began SVR coding for final step
+### What do you plan to do for next week?
+* Follow up questions for authors
+* Additional documentation
+* Further testing and fine tuning
+### Are you blocked on anything?
+* No
