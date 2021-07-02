@@ -38,6 +38,7 @@
 * Complete testing framework for better understanding model performance
 ### Are you blocked on anything?
 * Inputs from the author will hopefully come sometime next week. 
+***
 
 ## Week 4 (28<sup>st</sup> June - 02<sup>nd</sup> July 2021)
 
