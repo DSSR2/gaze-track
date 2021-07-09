@@ -53,3 +53,18 @@
 * Further testing and fine tuning
 ### Are you blocked on anything?
 * No
+***
+
+## Week 5 (05<sup>th</sup> - 09<sup>th</sup> July 2021)
+
+### What did you do this week?
+* SVR based personalization experiments started
+* Set up comet.ml for tracking since Neptune.ai had issues
+* Setting up Neptune.ai for experiment tracking
+* Documentation
+### What do you plan to do for next week?
+* Learn a simple affine transform instead of the SVR
+* Finish the SVR based personalization
+* Collect data using the app and check if it works
+### Are you blocked on anything?
+* No
