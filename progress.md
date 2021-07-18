@@ -59,7 +59,7 @@
 
 ### What did you do this week?
 * SVR based personalization experiments started
-* Set up comet.ml for tracking since Neptune.ai had issues
+* Trained device specific models using the pre trained larger model
 * Setting up Neptune.ai for experiment tracking
 * Documentation
 ### What do you plan to do for next week?
@@ -68,3 +68,16 @@
 * Collect data using the app and check if it works
 ### Are you blocked on anything?
 * No
+
+## Week 6 (12<sup>th</sup> - 16<sup>th</sup> July 2021)
+
+### What did you do this week?
+* Completed SVR and Affine based fine tuning code
+* Trained and tested device specific models using the pretrained larger model
+* Started iTracker experimentation
+### What do you plan to do for next week?
+* Per person model fine tuning
+* More iTracker experiments
+* Compare results with the Google trained model once they provide it. 
+### Are you blocked on anything?
+* License agreement for the trained Google model
