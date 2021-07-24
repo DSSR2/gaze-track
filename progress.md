@@ -60,7 +60,7 @@
 ### What did you do this week?
 * SVR based personalization experiments started
 * Trained device specific models using the pre trained larger model
-* Setting up Neptune.ai for experiment tracking
+* Moved to comet.ml for experiment tracking
 * Documentation
 ### What do you plan to do for next week?
 * Learn a simple affine transform instead of the SVR
@@ -68,9 +68,9 @@
 * Collect data using the app and check if it works
 ### Are you blocked on anything?
 * No
+***
 
 ## Week 6 (12<sup>th</sup> - 16<sup>th</sup> July 2021)
-
 ### What did you do this week?
 * Completed SVR and Affine based fine tuning code
 * Trained and tested device specific models using the pretrained larger model
@@ -81,3 +81,16 @@
 * Compare results with the Google trained model once they provide it. 
 ### Are you blocked on anything?
 * License agreement for the trained Google model
+***
+
+## Week 7 (19<sup>th</sup> - 23<sup>rd</sup> July 2021)
+### What did you do this week?
+* Fixed Affine transform and obtained reasonable results
+* Base model finalized
+* Fine tuning experiments - person based and device based
+### What do you plan to do for next week?
+* Self train iTracker model
+* Experiment on the binary provided by Google
+* Move towards final demo implementation
+### Are you blocked on anything?
+* no
