@@ -94,3 +94,18 @@
 * Move towards final demo implementation
 ### Are you blocked on anything?
 * no
+***
+
+## Week 8 (26<sup>th</sup> - 30<sup>th</sup> July 2021)
+### What did you do this week?
+* Started iTracker experiments
+* Trained iTracker from scratch
+* Fine tuned provided iTracker pyTorch model
+* SVR fine tuning code fixed and working.
+
+### What do you plan to do for next week?
+* Experiment on the binary provided by Google
+* Continue iTracker experiments
+* Move towards final demo implementation
+### Are you blocked on anything?
+* Need to get the Google model file
