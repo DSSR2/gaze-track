@@ -5,6 +5,7 @@ import pytorch_lightning as pl
 
 from gazetrack_data import gazetrack_dataset
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import ExponentialLR, ReduceLROnPlateau
 
 
 class eye_model(nn.Module):
@@ -55,14 +56,21 @@ class landmark_model(nn.Module):
         return x
     
 class lit_gazetrack_model(pl.LightningModule):
-    def __init__(self, data_path, save_path):
+    def __init__(self, data_path, save_path, batch_size, logger, workers=20):
         super(lit_gazetrack_model, self).__init__()
         
-        self.lr = 0.001
-        self.batch_size = 2048
+        self.lr = 0.016
+        self.batch_size = batch_size
         self.data_path = data_path
+        self.workers = workers
         print("Data path: ", data_path)
         self.save_path = save_path
+        PARAMS = {'batch_size': self.batch_size,
+                  'init_lr': self.lr,
+                  'data_path': self.data_path,
+                  'save_path': self.save_path,
+                    'scheduler': "Plateau"}
+        logger.log_hyperparams(PARAMS)
         
         self.eye_model = eye_model()
         self.lmModel = landmark_model()
@@ -73,9 +81,7 @@ class lit_gazetrack_model(pl.LightningModule):
                                             nn.Linear(8, 4),
                                             nn.BatchNorm1d(4, momentum=0.9),
                                             nn.ReLU(inplace = True),
-                                            nn.Linear(4, 2),)
-        
-    
+                                            nn.Linear(4, 2),)        
 
     def forward(self, leftEye, rightEye, lms):
         l_eye_feat = torch.flatten(self.eye_model(leftEye), 1)
@@ -89,26 +95,40 @@ class lit_gazetrack_model(pl.LightningModule):
     
     def train_dataloader(self):
         train_dataset = gazetrack_dataset(self.data_path+"/train/", phase='train')
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, num_workers=self.workers, shuffle=True)
+        self.logger.log_hyperparams({'Num_train_files': len(train_dataset)})
         return train_loader
     
     def val_dataloader(self):
         dataVal = gazetrack_dataset(self.data_path+"/val/", phase='val')
-        val_loader = DataLoader(dataVal, batch_size=self.batch_size, shuffle=True)
+        val_loader = DataLoader(dataVal, batch_size=self.batch_size, num_workers=self.workers, shuffle=False)
+        self.logger.log_hyperparams({'Num_val_files': len(dataVal)})
         return val_loader
     
     def training_step(self, batch, batch_idx):
         _, l_eye, r_eye, kps, y, _, _ = batch
         y_hat = self(l_eye, r_eye, kps)
         loss = F.mse_loss(y_hat, y)
+        self.log('train_loss', loss, on_step=True, on_epoch=True)
+        self.logger.experiment.log_metric('train_loss', loss)
         return loss
     
     def validation_step(self, batch, batch_idx):
         _, l_eye, r_eye, kps, y, _, _ = batch
         y_hat = self(l_eye, r_eye, kps)
         val_loss = F.mse_loss(y_hat, y)
+        self.logger.experiment.log_metric('val_loss', val_loss)
+        self.log('val_loss', val_loss, on_step=True, on_epoch=True)
         return val_loss
     
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, betas=(0.9, 0.999), eps=1e-07)
-        return optimizer
+#         scheduler = ExponentialLR(optimizer, gamma=0.64, verbose=True)
+        scheduler = ReduceLROnPlateau(optimizer, 'min', verbose=True)
+        return {
+            'optimizer': optimizer,
+            'lr_scheduler': {
+                'scheduler': scheduler,
+                'monitor': 'val_loss'
+            }
+        }
