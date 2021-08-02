@@ -30,7 +30,7 @@ class gazetrack_dataset(Dataset):
         with open(self.files[idx].replace('.jpg','.json').replace('images', 'meta')) as f:
             meta = json.load(f)
 
-        screen_w, screen_h = meta['screen_w'], meta['screen_h']
+        w, h = image.size
         lx, ly, lw, lh = meta['leye_x'], meta['leye_y'], meta['leye_w'], meta['leye_h']
         rx, ry, rw, rh = meta['reye_x'], meta['reye_y'], meta['reye_w'], meta['reye_h']
         if(self.phase=='train'):
@@ -40,10 +40,8 @@ class gazetrack_dataset(Dataset):
             lx, ly, lw, lh = lx+lxj, ly+lyj, lw+lwj, lh+lhj
             rx, ry, rw, rh = rx+rxj, ry+ryj, rw+rwj, rh+rhj
         
-        kps = [meta['leye_x1']/screen_w, meta['leye_y1']/screen_h, meta['leye_x2']/screen_w, meta['leye_y2']/screen_h, 
-               meta['reye_x1']/screen_w, meta['reye_y1']/screen_h, meta['reye_x2']/screen_w, meta['reye_y2']/screen_h]
-#         kps = [meta['leye_x1'], meta['leye_y1'], meta['leye_x2'], meta['leye_y2'], 
-#                meta['reye_x1'], meta['reye_y1'], meta['reye_x2'], meta['reye_y2']]
+        kps = [meta['leye_x1']/w, meta['leye_y1']/h, meta['leye_x2']/w, meta['leye_y2']/h, 
+               meta['reye_x1']/w, meta['reye_y1']/h, meta['reye_x2']/w, meta['reye_y2']/h]
         
         l_eye = image.crop((max(0, lx), max(0, ly), max(0, lx+lw), max(0, ly+lh)))
         r_eye = image.crop((max(0, rx), max(0, ry), max(0, rx+rw), max(0, ry+rh)))
@@ -56,7 +54,7 @@ class gazetrack_dataset(Dataset):
         
         l_eye = self.aug(l_eye)
         r_eye = self.aug(r_eye)
-        return self.files[idx], l_eye, r_eye, kps, out, screen_w, screen_h
+        return self.files[idx], l_eye, r_eye, kps, out, w, h
     
     def get_transforms(self, phase, size):
         list_transforms = []
