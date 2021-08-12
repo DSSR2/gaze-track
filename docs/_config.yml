@@ -1,1 +1,3 @@
 theme: jekyll-theme-minimal
+title: [Gaze Track]
+description: [An implementation of Google's paper]
