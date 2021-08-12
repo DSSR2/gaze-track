@@ -1,3 +1,2 @@
 theme: jekyll-theme-minimal
-title:  
-description: [An implementation of Google's [paper](https://www.nature.com/articles/s41467-020-18360-5){:target="_blank"}. <img src eye.jpg></img>]
+description: [An implementation of Google's <a href="https://www.nature.com/articles/s41467-020-18360-5">paper</a>]

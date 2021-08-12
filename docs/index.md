@@ -1,4 +1,4 @@
-## Gaze Track
+# Gaze Track
 <img src="eye.jpg" alt="Gaze Track" />
 
 You can use the [editor on GitHub](https://github.com/DSSR2/gaze-track/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
