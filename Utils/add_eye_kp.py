@@ -11,7 +11,7 @@ Add eye landmarks to the MIT Gaze Capture Dataset using DLib
 
 import argparse
 parser = argparse.ArgumentParser(description='Adding eye key points to meta data')
-parser.add_argument('--dir', default='./dataset/', help='Path to converted dataset')
+parser.add_argument('--dir', default='./dataset/', help='Path to converted dataset. Use dataset_converter')
 parser.add_argument('--workers', default=40, type=int, help='Number of CPU cores available')
 parser.add_argument('--p', default="./shape_predictor_68_face_landmarks.dat", help='Path to trained facial landmark model file')
 
@@ -20,6 +20,7 @@ def add_kps(files, p):
     predictor = dlib.shape_predictor(p)
     no_face = 0
     err_ctr = 0
+    buffer = 10
     for i in tqdm(files):
         img = cv2.imread(i)
         bw_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -39,13 +40,18 @@ def add_kps(files, p):
         
         face_rect = dlib.rectangle(fx, fy, fx+fw, fy+fh)
         kps = predictor(bw_img, face_rect)
-        if(in_box((reye_x-10, reye_y-10, reye_w+20, reye_h+20), (kps.part(36).x, kps.part(36).y)) and in_box((reye_x-10, reye_y-10, reye_w+20, reye_h+20), (kps.part(39).x, kps.part(39).y))):
+        
+        # make sure the detected landmark point are within the eye bounding box.
+        if(in_box((reye_x-buffer, reye_y-buffer, reye_w+(buffer*2), reye_h+(buffer*20)), (kps.part(36).x, kps.part(36).y)) 
+           and in_box((reye_x-buffer, reye_y-buffer, reye_w+(buffer*2), reye_h*(buffer*2)), (kps.part(39).x, kps.part(39).y))):
+            
             meta['reye_x1'], meta['reye_y1'], meta['reye_x2'], meta['reye_y2'] = kps.part(36).x, kps.part(36).y, kps.part(39).x, kps.part(39).y
         else:
             err_ctr+=1
             meta['reye_x1'], meta['reye_y1'], meta['reye_x2'], meta['reye_y2'] = reye_x, reye_y+(reye_h//2), reye_x+reye_w, reye_y+(reye_h//2)
             
-        if(in_box((leye_x-10, leye_y-10, leye_w+20, leye_h+20), (kps.part(42).x, kps.part(42).y)) and in_box((leye_x-10, leye_y-10, leye_w+20, leye_h+20), (kps.part(45).x, kps.part(45).y))):
+        if(in_box((leye_x-buffer, leye_y-buffer, leye_w+(buffer*2), leye_h+(buffer*2)), (kps.part(42).x, kps.part(42).y)) 
+           and in_box((leye_x-buffer, leye_y-buffer, leye_w+(buffer*2), leye_h+(buffer*2)), (kps.part(45).x, kps.part(45).y))):
             meta['leye_x1'], meta['leye_y1'], meta['leye_x2'], meta['leye_y2'] = kps.part(42).x, kps.part(42).y, kps.part(45).x, kps.part(45).y
         else:
             err_ctr+=1

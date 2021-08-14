@@ -44,7 +44,9 @@ def convert_dataset(files, out_root):
         try:
             train_dots, test_dots = train_test_split(valid_dots, test_size=0.2)
         except:
+            # Too few dots to split, skip participant
             continue
+            
             
         try:
             test_dots, val_dots = train_test_split(test_dots, test_size=0.4)
@@ -89,6 +91,7 @@ def convert_dataset(files, out_root):
             meta['dot_xcam'], meta['dot_y_cam'] = dot['XCam'][frame_idx], dot['YCam'][frame_idx]
             meta['dot_x_pix'], meta['dot_y_pix'] = dot['XPts'][frame_idx], dot['YPts'][frame_idx]
             
+            # Copy cases where face portion is more than 50% of the image to a seaparte folder
             if((meta['face_w']*meta['face_h']) > (0.5*meta['screen_h']*meta['screen_w'])):
                 shutil.copy(i+'/frames/'+fname+".jpg", outdir2+"/images/"+expt_name+'__'+fname+'.jpg')
                 meta_file = outdir2+'/meta/'+expt_name+'__'+fname+'.json'
