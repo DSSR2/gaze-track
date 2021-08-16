@@ -13,19 +13,21 @@ Split the test set of the converted dataset into 13 point SVR training and testi
 Input should be root of folder containing dataset converted using dataset_converter_*.py and root directory of completly unzipped GazeCapture dataset. 
 '''
 
+import argparse
 parser = argparse.ArgumentParser(description='Split Dataset based on device')
 parser.add_argument('--mit_root', help="Path to unzipped MIT GazeCapture dataset. Should have 5 digit folder names")
 parser.add_argument('--data_root', help="Path to a dataset converted using any of the dataset_converter_*.py files")
-parser.add_argument('--new_root', help="Path to store the new split test set")
-parser.add_argument('--workers', type=int, help="Number of workers")
+parser.add_argument('--out_root', help="Path to store the new split test set")
+parser.add_argument('--only_test', default=1, type=int, help="Split whole dataset or only test set")
+parser.add_argument('--threads', type=int, help="Number of workers")
 
 def split_dataset(root, folders, data_root, new_root):
     pts = []
     for i in tqdm(folders):
         part = i[-6:-1]
-        data = json.load(open(root+part+"/dotInfo.json"))
+        data = json.load(open(root+"/"+part+"/dotInfo.json"))
 
-        screen_info = json.load(open(root+part+"/screen.json"))
+        screen_info = json.load(open(root+"/"+part+"/screen.json"))
 
         port = np.asarray(screen_info["Orientation"])==1
 
@@ -81,27 +83,57 @@ def split_dataset(root, folders, data_root, new_root):
                     shutil.copy(data_root+"/meta/"+fname+".json", new_root+"/train/meta/")
 
             except:
-                print("Error for file ", fname)
                 pass
+
+def add_ttv(path):
+    os.mkdir(path+"/train/")
+    os.mkdir(path+"/val/")
+    os.mkdir(path+"/test/")
+    os.mkdir(path+"/train/images/")
+    os.mkdir(path+"/train/meta/")
+    os.mkdir(path+"/val/images/")
+    os.mkdir(path+"/val/meta/")
+    os.mkdir(path+"/test/images")
+    os.mkdir(path+"/test/meta")
+    
+def prep_path(path, clear=True):
+    if not os.path.isdir(path):
+        os.makedirs(path, 0o777)
+    if clear:
+        files = os.listdir(path)
+        for f in files:
+            fPath = os.path.join(path, f)
+            if os.path.isdir(fPath):
+                shutil.rmtree(fPath)
+            else:
+                os.remove(fPath)
+    add_ttv(path+"/")
+    return path
 
 def main():
     args = parser.parse_args()
     threads = args.threads
-    preparePath(args.output_path)
+    prep_path(args.out_root)
     
     procs = []
-    files = glob(args.dataset_path+"/*/meta/*.json")
+    if(args.only_test):
+        files = glob(args.data_root+"/meta/*.json")
+    else:
+        files = glob(args.data_root+"/*/meta/*.json")
+        
     chunk = len(files)//threads
+    folders = glob(args.mit_root+"/*/")
+    
     print("Number of files: ", len(files))
     for i in range(threads): 
-        f = files[i*chunk:(i+1)*chunk]
+        f = folders[i*chunk:(i+1)*chunk]
         if(i==threads-1):
-            f = files[i*chunk:]
+            f = folders[i*chunk:]
         
-        proc = Process(target=convert_dataset, args=(f, args.output_path))
+        proc = Process(target=split_dataset, args=(args.mit_root, f, args.data_root, args.out_root))
         procs.append(proc)
         proc.start()
-        print(i)
+        print("Start process #"+str(i))
         
     for proc in procs:
         proc.join()

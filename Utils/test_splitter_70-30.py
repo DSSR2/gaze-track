@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 Split data according to 70/15/10 split based on unique points. 
 This is the method Google follows to report the results obtained in their paper. 
 '''
-
+import argparse
 parser = argparse.ArgumentParser(description='Split Dataset based on device')
 parser.add_argument('--data_root', help="Path to a dataset converted using any of the dataset_converter_*.py files")
 parser.add_argument('--out_root', help="Path to store the new split test set")
@@ -66,7 +66,30 @@ def split_dataset(files, out_root):
             elif(cl_pts[k] == 3):
                 shutil.copy(lf[k], of+"/val/meta/")
                 shutil.copy(lf[k].replace("meta", 'images').replace('json', 'jpg'), of+"/val/images/")        
-
+def add_ttv(path):
+    os.mkdir(path+"/train/")
+    os.mkdir(path+"/val/")
+    os.mkdir(path+"/test/")
+    os.mkdir(path+"/train/images/")
+    os.mkdir(path+"/train/meta/")
+    os.mkdir(path+"/val/images/")
+    os.mkdir(path+"/val/meta/")
+    os.mkdir(path+"/test/images")
+    os.mkdir(path+"/test/meta")
+    
+def prep_path(path, clear=True):
+    if not os.path.isdir(path):
+        os.makedirs(path, 0o777)
+    if clear:
+        files = os.listdir(path)
+        for f in files:
+            fPath = os.path.join(path, f)
+            if os.path.isdir(fPath):
+                shutil.rmtree(fPath)
+            else:
+                os.remove(fPath)
+    add_ttv(path+"/")
+    return path
 
 def assign_work(path, out_dir, threads):
     procs = []
@@ -83,16 +106,17 @@ def assign_work(path, out_dir, threads):
         if(i==threads-1):
             f = files[i*chunk:]
         
-        proc = Process(target=move_files, args=(f, out_dir))
+        proc = Process(target=split_dataset, args=(f, out_dir))
         procs.append(proc)
         proc.start()
-        print(i)
+        print("Start process #"+str(i))
         
     for proc in procs:
         proc.join()
         
 def main():
-    args = parser.parse_args()    
+    args = parser.parse_args()   
+    prep_path(args.out_root)
     if(args.only_test):
         data_root = args.data_root+"/meta/*.json"
     else:
