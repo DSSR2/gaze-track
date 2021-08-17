@@ -48,7 +48,7 @@ All frames that make it to the final dataset contains only those frames that hav
 
 The _MIT Split_ maintains the train test validation split at a per participant level, same as what GazeCapture does. What this means is that a data from one participant does not appear in more than one of the train/test/val sets. We have different participants in the train, val and test sets. This ensures that the trained model is truly robust and can generalize well.
 
-You can use the [Utils/dataset_converter_mit_split.py](../Utils/dataset_converter_mit_split.py) file to generate the two datasets mentioned below.
+You can use the [Utils/dataset_converter_mit_split.py](https://github.com/DSSR2/gaze-track/blob/main/Utils/dataset_converter_mit_split.py) file to generate the two datasets mentioned below.
 
 #### Only Phone Only Portrait
 The first dataset we will discuss is the closest to what Google used to train their model. We apply the following filters:
@@ -57,7 +57,7 @@ The first dataset we will discuss is the closest to what Google used to train th
 * Valid face detections
 * Valid eye detections 
 
-This dataset is what the [provided base model](../Checkpoints/GoogleCheckpoint_1.ckpt) is trained on. 
+This dataset is what the [provided base model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_1.ckpt) is trained on. 
 
 The figure below shows the distribution of number of frames per device. 
 <img src="MITSplitPort.png"/>
@@ -88,7 +88,7 @@ Overall, there were
 ### Google Split -
 Google split their dataset according to the unique ground truth points. This therefore means that frames from each participant are present in the train test and validation sets. To ensure no data leaks though, frames related to a particular ground truth point do not appear in more than one set. The split is also a random 70/10/15 train/val/test split compared to a 13 point calibration split. 
 
-You can use the [Utils/dataset_converter_google_split.py](../Utils/dataset_converter_google_split.py) file to generate this dataset.
+You can use the [Utils/dataset_converter_google_split.py](https://github.com/DSSR2/gaze-track/blob/main/Utils/dataset_converter_google_split.py) file to generate this dataset.
 
 
 ### Test Split SVR 13 Point Calibration - 
