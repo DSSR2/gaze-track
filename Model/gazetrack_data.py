@@ -11,7 +11,7 @@ import sys
 from torch.utils.data import Dataset, DataLoader
 
 class gazetrack_dataset(Dataset):
-    def __init__(self, root, phase='train', size=(128, 128), transform=True):
+    def __init__(self, root, phase='train', size=(128, 128), transform=True, v=True):
         self.root = root
         self.rand_amt = 10
         if(phase=='test'):
@@ -23,7 +23,8 @@ class gazetrack_dataset(Dataset):
         self.size = size
         self.aug = self.get_transforms(self.phase, self.size)
         self.transform = transform
-        print("Num files for " + phase + " = " + str(len(self.files)))
+        if(v):
+            print("Num files for " + phase + " = " + str(len(self.files)))
         
     def __getitem__(self, idx):
         image = Image.open(self.files[idx])
@@ -69,16 +70,4 @@ class gazetrack_dataset(Dataset):
         return list_trfms
     
     def __len__(self):
-        return len(self.files)
-    
-
-    
-if __name__ == '__main__':
-    test_dataset = gazetrack_dataset('../../dssr/dataset/test')
-    loader = DataLoader(
-        test_dataset,
-        batch_size=5,
-        num_workers=20,
-        pin_memory=False,
-        shuffle=False,)
-    
+        return len(self.files)   
