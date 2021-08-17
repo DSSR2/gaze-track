@@ -121,6 +121,7 @@ We reproduce the network as provided in the Google paper and the supplementary i
 
 The figure below shows the network architecture. 
 <img src="gazeTrackNet.jpg"/>
+
 ***
 
 ## Training
@@ -131,7 +132,81 @@ We use an Exponential Learning rate scheduler. Experiments were carried out with
 ***
 
 ## Results
+The table below summarizes the results obtained using the trained models provided. 
 
+These results are slightly worse than Google's reported errors since we have less restrictions on our data. 
+<table>
+<thead>
+  <tr>
+    <th>Model Name</th>
+    <th>Dataset Name</th>
+    <th>Number of Overall Test Files</th>
+    <th>Test Error Overall (cm)</th>
+    <th>Number of Non Calibration Test Points</th>
+    <th>Test Error Non Calibration Points (cm)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td rowspan="7">GoogleCheckpoint_MITSplit.ckpt</td>
+    <td>MIT Split; All phones, Only portrait</td>
+    <td>55,541</td>
+    <td>2.038 cm</td>
+    <td>33,674</td>
+    <td>1.92 cm</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 4S, Only portrait</td>
+    <td>522</td>
+    <td>2.04 cm</td>
+    <td>NA</td>
+    <td>NA</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 5, Only portrait</td>
+    <td>3,362</td>
+    <td>1.75 cm</td>
+    <td>1,883</td>
+    <td>1.61 cm</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 5S, Only portrait</td>
+    <td>12,648</td>
+    <td>1.95 cm</td>
+    <td>7,158</td>
+    <td>1.85 cm</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 5C, Only portrait</td>
+    <td>3,643</td>
+    <td>1.87 cm</td>
+    <td>2,072</td>
+    <td>1.70 cm</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 6, Only portrait</td>
+    <td>16,993</td>
+    <td>2.05 cm</td>
+    <td>9,683</td>
+    <td>1.98 cm</td>
+  </tr>
+  <tr>
+    <td>MIT Split; Only iPhone 6S, Only portrait</td>
+    <td>11,178</td>
+    <td>1.91 cm</td>
+    <td>7,777</td>
+    <td>1.75 cm</td>
+  </tr>
+  <tr>
+    <td>GoogleCheckpoint_GoogleSplit.ckpt</td>
+    <td>Google Split; All phones, Only portrait</td>
+    <td>83,849</td>
+    <td>1.86cm</td>
+    <td>NA</td>
+    <td>NA</td>
+  </tr>
+</tbody>
+</table>
 
 ***
 
