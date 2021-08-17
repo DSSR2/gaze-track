@@ -4,13 +4,22 @@
 Welcome to the complete guide for the implementation and experiments based on Google's recent paper [Accelerating eye movement research via accurate and affordable smartphone eye tracking](https://www.nature.com/articles/s41467-020-18360-5). 
 
 Please use this index to quickly jump to the portions that interest you most.
-- [Gaze Track](#gaze-track)
-  * [Introduction](#introduction)
-  * [The Dataset](#the-dataset)
-  * [The Network](#the-network)
-  * [Training](#training)
-  * [Results](#results)
-  * [Experiments](#experiments)
+- [Introduction](#introduction)
+- [The Dataset](#the-dataset)
+  * [Raw Dataset Numbers](#raw-dataset-numbers)
+  * [Key Point Generation](#key-point-generation)
+  * [MIT Split](#mit-split)
+    + [Only Phone Only Portrait](#only-phone-only-portrait)
+    + [Only Phones All Orientations](#only-phones-all-orientations)
+  * [Google Split](#google-split)
+  * [Test Split SVR 13 Point Calibration](#test-split-svr-13-point-calibration)
+  * [Test Split Google](#test-split-google)
+- [The Network](#the-network)
+- [Training](#training)
+- [Results](#results)
+- [Experiments](#experiments)
+- [References](#references)
+- [Acknowledgements](#acknowledgements)
 
 ***
 
@@ -41,9 +50,9 @@ Since the Google Model requires eye landmark key points that are not included in
 1. Extract gazecapture.tar to a temp folder
 2. Extract *.tar.gz into the same temp folder
 3. Use one of the dataset conversion scripts in `Utils/dataset_converter*` to change the folder structure to a usable one 
-4. Use the [Utils/add_eye_kp.py](../Utils/add_eye_kp.py) file to generate the key points. 
+4. Use the [Utils/add_eye_kp.py](https://github.com/DSSR2/gaze-track/blob/main/Utils/add_eye_kp.py) file to generate the key points. 
 
-### MIT Split - 
+### MIT Split
 All frames that make it to the final dataset contains only those frames that have a valid face detection along with valid eye detections. If any one of the 3 detections are not present, the frame is discarded. 
 
 The _MIT Split_ maintains the train test validation split at a per participant level, same as what GazeCapture does. What this means is that a data from one participant does not appear in more than one of the train/test/val sets. We have different participants in the train, val and test sets. This ensures that the trained model is truly robust and can generalize well.
@@ -57,7 +66,7 @@ The first dataset we will discuss is the closest to what Google used to train th
 * Valid face detections
 * Valid eye detections 
 
-This dataset is what the [provided base model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_1.ckpt) is trained on. 
+This dataset is what the [provided base model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_MITSplit.ckpt) is trained on. 
 
 The figure below shows the distribution of number of frames per device. 
 <img src="MITSplitPort.png"/>
@@ -80,31 +89,49 @@ The figure below shows the distribution of number of frames per device.
 <img src="MITSplitAll.png"/>
 
 Overall, there were
-* 501,735 Total frames from 1,241 participants
-* 427,092 Train frames from 1,075  participants
-* 19,102 Validation frames from 45 participants
-* 55,541 Test frames from 121 participants
+* 1,272,185 Total frames from 1247 participants 
+* 1,076,797 Train frames from 1081 participants
+* 51,592 Validation frames from 45 participants
+* 143,796 Test frames from 121 participants
 
-### Google Split -
+### Google Split
 Google split their dataset according to the unique ground truth points. This therefore means that frames from each participant are present in the train test and validation sets. To ensure no data leaks though, frames related to a particular ground truth point do not appear in more than one set. The split is also a random 70/10/15 train/val/test split compared to a 13 point calibration split. 
+
+This dataset is what the [GoogleSplit Model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_GoogleSplit.ckpt) is trained on.
+
+The figure below shows the distribution of number of frames per device. 
+<img src="GoogSplitPort.png"/>
 
 You can use the [Utils/dataset_converter_google_split.py](https://github.com/DSSR2/gaze-track/blob/main/Utils/dataset_converter_google_split.py) file to generate this dataset.
 
+Overall, there were
+* 501,735 Total frames from 1,241 participants
+* 366,940 Train frames from 1,241  participants
+* 50,946 Validation frames from 1,219 participants
+* 83,849 Test frames from 1,233 participants
 
-### Test Split SVR 13 Point Calibration - 
 
-### Test Split Google - 
+### Test Split SVR 13 Point Calibration
+
+### Test Split Google
 ***
 
 ## The Network
+We reproduce the network as provided in the Google paper and the supplementary information. 
 
+The figure below shows the network architecture. 
+<img src="gazeTrackNet.jpg"/>
 ***
 
 ## Training
+We use PyTorch Lightning to train our model. We leverage multiple GPUs and make sure to use all the resources available. Since the network is relatively small ~140K parameters, training speeds are fast. 
+
+We use an Exponential Learning rate scheduler. Experiments were carried out with Exponential LR, Reduce LR on Plateau and no LR schedulers. The Exponential LR scheduler provided the best model. This is also similar to what Google mentions in their paper. 
 
 ***
 
 ## Results
+
 
 ***
 
