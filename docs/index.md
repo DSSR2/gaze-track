@@ -12,12 +12,22 @@ Please use this index to quickly jump to the portions that interest you most.
     + [Only Phone Only Portrait](#only-phone-only-portrait)
     + [Only Phones All Orientations](#only-phones-all-orientations)
   * [Google Split](#google-split)
-  * [Test Split SVR 13 Point Calibration](#test-split-svr-13-point-calibration)
-  * [Test Split Google](#test-split-google)
+  * [Test Set](#test-set)
+    + [13 Point Calibration Split for SVR Training](#13-point-calibration-split-for-svr-training)
+  * [70/30 Split for SVR Training](#70-30-split-for-svr-training)
 - [The Network](#the-network)
 - [Training](#training)
 - [Results](#results)
+  * [Base Model Results](#base-model-results)
+  * [SVR Personalization](#svr-personalization)
+    + [13 Point Calibration Split](#13-point-calibration-split)
+    + [Google 70/30 Train Test Split](#google-70-30-train-test-split)
+  * [SVR Outputs](#svr-outputs)
 - [Experiments](#experiments)
+  * [Network Architecture](#network-architecture)
+  * [Dataset](#dataset)
+  * [Training](#training-1)
+  * [Results](#results-1)
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
 
@@ -117,9 +127,27 @@ Results are reported on the entire test set and also on a subset of the entire t
 The paper claims that per person personalization greatly improves the performance of the system. This personalization is done using a simple SVR. To train the SVR, we split the test set into training and testing sets. 
 
 #### 13 Point Calibration Split for SVR Training
-In the first split, we choose the 13 point calibration data as the training set for the SVR and the rest of the 17 ground truth points serve as the test set. 
+In the first split, we choose the 13 point calibration data as the training set for the SVR and the rest of the 17 ground truth points serve as the test set. All frames related to each of the ground truth points are segregated into their respective sets to ensure no data leakage. 
+
+The image below shows an example of this split. 
+<img src="imgs/SVR13Example.png"/>
+
+Details of this test set:
+* Total number of files: 55,541
+* Total number of participants: 121
+* Total number of train files: 21,867
+* Total number of test: 33,674
 
 ### 70/30 Split for SVR Training
+
+<img src="imgs/GoogleTestExample.png"/>
+
+Details of this test set:
+* Total number of files: 55,541
+* Total number of participants: 121
+* Total number of train files: 38,892
+* Total number of test: 16,649
+
 ***
 
 ## The Network
@@ -219,12 +247,52 @@ These results are slightly worse than Google's reported errors since we have les
 ### SVR Personalization
 We take the output of the penultimate ReLU layer from the base model and train a per person SVR to provide a personalized result. The SVR leads in a reduction in the overall mean error but there are a few cases where the SVR hurts performance.
 
+The results are summarized in the table below. 
+<table>
+<thead>
+  <tr>
+    <th>Dataset</th>
+    <th>Number of Test Files</th>
+    <th>Base Model Mean Error (cm)</th>
+    <th>Mean Error After SVR(cm)</th>
+    <th>Improvement (cm)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>SVR 13 Point Calibration</td>
+    <td>33,674</td>
+    <td>1.91</td>
+    <td>1.79</td>
+    <td>0.12</td>
+  </tr>
+  <tr>
+    <td>SVR 70/30 Point Split</td>
+    <td>16,649</td>
+    <td>2.03</td>
+    <td>1.87</td>
+    <td>0.16</td>
+  </tr>
+</tbody>
+</table>
+
+Since the 13 point calibration set uses the ground truth points that are at the edges of the screen for training, the test set contains more points that tend to the centre of the screen. Hence the base model error on the SVR 13 point calibration dataset is considerably lower than the 70/30 split set. 
+
+But since the SVR is trained on more data in the 70/30 split dataset, we see the delta between pre SVR and post SVR error is larger which shows better personalization. 
+
 #### 13 Point Calibration Split
+The SVR reduces the mean overall error from 1.9187cm to 1.8124cm. This is a good result considering there are few cases where the SVR actually harms performance. 
 
 <img src="imgs/SVRComparison.png"/>
 
 #### Google 70/30 Train Test Split
+The SVR reduces the mean overall error from 1.9187cm to 
 <img src="imgs/SVRComparisonGoogle.png"/>
+
+### SVR Outputs
+<h4>Examples where SVR helps</h4>
+
+<h4>Examples where SVR hurts</h4>
 
 ***
 
@@ -258,9 +326,41 @@ Details of the dataset:
 We again use PyTorch Lightning. The percentage of dropout during training is increased throughout the architecture. Different schedulers and optimizers were tried and the best performing model was obtained using the Adam Optimizer and a ReduceLRonPlateau scheduler. 
 
 ### Results
-While the error in centimeters is very low, it looks like the network has learned a "cheat" solution.  
+The error of 2.01cm is even lower than GazeCapture's error when they do not use any augmentation! This goes to show the power of this architecture. This architecture has ~150K parameters while the GazeCapture dataset has ~7M parameters. 
 
-The error reported here is even lower than GazeCapture's error when they do not use any augmentation. This goes to show the power of this architecture. This architecture has ~150K parameters while the GazeCapture dataset has ~7M parameters. 
+While the error in centimetres is very low, it looks like the network has learned a "cheat" solution.
+
+The image below shows all the possible ground truth locations (the '+') sign and all the predictions made by the network (the blue dots). All predictions are made in the unified prediction space with the camera (star) at (0,0). 
+
+<img src="imgs/GTFull.png"/>
+
+The three orientations - portrait, landscape with camera on right and landscape of camera on right - are all encompassed in this single image. While we see the distribution of the portrait orientation predictions are close to the actual ground truths, both the landscape predictions seem to "learn" boundaries that don't actually exist. 
+
+The table below lists the mean errors per orientation. 
+<table>
+<thead>
+  <tr>
+    <th>Orientation</th>
+    <th>Mean Error(cm)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Portrait orientation</td>
+    <td>2.0337548</td>
+  </tr>
+  <tr>
+    <td>Landscape, with home button on the right</td>
+    <td>2.0637705</td>
+  </tr>
+  <tr>
+    <td>Landscape, with home button on the left</td>
+    <td>1.9330263</td>
+  </tr>
+</tbody>
+</table>
+
+This remains an open problem and could lead to interesting insights on how the network learns. 
 
 ***
 
