@@ -132,6 +132,8 @@ We use an Exponential Learning rate scheduler. Experiments were carried out with
 ***
 
 ## Results
+
+### Base Model Results
 The table below summarizes the results obtained using the trained models provided. 
 
 These results are slightly worse than Google's reported errors since we have less restrictions on our data. 
@@ -208,9 +210,46 @@ These results are slightly worse than Google's reported errors since we have les
 </tbody>
 </table>
 
+### SVR Personalization
+We take the output of the penultimate ReLU layer from the base model and train a per person SVR to provide a personalized result. The SVR leads in a reduction in the overall mean error but there are a few cases where the SVR hurts performance.
+
+<img src="SVRComparison.png"/>
+
 ***
 
 ## Experiments
+To test how good the actual architecture that the Google paper defines is, we ran an experiment to see how it compares to the model proposed by the MIT GazeCapture paper. 
+
+### Network Architecture
+Since the Google Architecture does not have any information about orientation of the device, we decided to send it a small _helper_ data packet. The network now receives, along with eye corner landmarks, a one hot encoded orientation vector. 
+* `[0, 0, 1]` for portrait 
+* `[0, 1, 0]` for landscape 1
+* `[1, 0, 0]` for landscape 2
+
+The modified architecture is seen in the image below. 
+<img src="gazeTrackNetMod.jpg"/>
+
+### Dataset
+To train this network, we used the entire GazeCapture Dataset using only the following filters:
+* Only phone data
+* Valid face detections
+* Valid eye detections. 
+
+Eye key points were added to the entire dataset as described in the [Key Point Generation](#key-point-generation) section. 
+
+Details of the dataset: 
+* Total frames: 1,272,185
+* Train frames: 1,076,796
+* Val frames: 51,592
+* Test frames: 143,796
+
+### Training
+We again use PyTorch Lightning. The percentage of dropout during training is increased throughout the architecture. Different schedulers and optimizers were tried and the best performing model was obtained using the Adam Optimizer and a ReduceLRonPlateau scheduler. 
+
+### Results
+While the error in centimeters is very low, it looks like the network has learned a "cheat" solution.  
+
+The error reported here is even lower than GazeCapture's error when they do not use any augmentation. This goes to show the power of this architecture. This architecture has ~150K parameters while the GazeCapture dataset has ~7M parameters. 
 
 ***
 
