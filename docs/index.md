@@ -1,5 +1,5 @@
 # Gaze Track
-<img src="eye.jpg" alt="Gaze Track" />
+<img src="imgs/eye.jpg" alt="Gaze Track" />
 
 Welcome to the complete guide for the implementation and experiments based on Google's recent paper [Accelerating eye movement research via accurate and affordable smartphone eye tracking](https://www.nature.com/articles/s41467-020-18360-5). 
 
@@ -39,7 +39,7 @@ All trained models provided in this project are trained on some subset of the ma
 ### Raw Dataset Numbers
 The figure below shows the number of participants per device as well as the train/val/test split as provided by the GazeCapture team. 
 
-<img src="usersVSdevices.png"/>
+<img src="imgs/usersVSdevices.png"/>
 
 Details of the file structure within the dataset and what information is contained are explained very well at the [Official GazeCapture git repo](https://github.com/CSAILVision/GazeCapture). 
 
@@ -69,7 +69,7 @@ The first dataset we will discuss is the closest to what Google used to train th
 This dataset is what the [provided base model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_MITSplit.ckpt) is trained on. 
 
 The figure below shows the distribution of number of frames per device. 
-<img src="MITSplitPort.png"/>
+<img src="imgs/MITSplitPort.png"/>
 
 Overall, there were
 * 501,735 Total frames from 1,241 participants
@@ -86,7 +86,7 @@ The next dataset continues to split the data as suggested by GazeCapture but inc
 This dataset is used to train the model described in the `Experiments` folder. 
 
 The figure below shows the distribution of number of frames per device. 
-<img src="MITSplitAll.png"/>
+<img src="imgs/MITSplitAll.png"/>
 
 Overall, there were
 * 1,272,185 Total frames from 1247 participants 
@@ -100,7 +100,7 @@ Google split their dataset according to the unique ground truth points. This the
 This dataset is what the [GoogleSplit Model](https://github.com/DSSR2/gaze-track/blob/main/Checkpoints/GoogleCheckpoint_GoogleSplit.ckpt) is trained on.
 
 The figure below shows the distribution of number of frames per device. 
-<img src="GoogSplitPort.png"/>
+<img src="imgs/GoogSplitPort.png"/>
 
 You can use the [Utils/dataset_converter_google_split.py](https://github.com/DSSR2/gaze-track/blob/main/Utils/dataset_converter_google_split.py) file to generate this dataset.
 
@@ -111,16 +111,22 @@ Overall, there were
 * 83,849 Test frames from 1,233 participants
 
 
-### Test Split SVR 13 Point Calibration
+### Test Set
+Results are reported on the entire test set and also on a subset of the entire test set split according to the two methods below. 
 
-### Test Split Google
+The paper claims that per person personalization greatly improves the performance of the system. This personalization is done using a simple SVR. To train the SVR, we split the test set into training and testing sets. 
+
+#### 13 Point Calibration Split for SVR Training
+In the first split, we choose the 13 point calibration data as the training set for the SVR and the rest of the 17 ground truth points serve as the test set. 
+
+### 70/30 Split for SVR Training
 ***
 
 ## The Network
 We reproduce the network as provided in the Google paper and the supplementary information. 
 
 The figure below shows the network architecture. 
-<img src="gazeTrackNet.jpg"/>
+<img src="imgs/gazeTrackNet.jpg"/>
 
 ***
 
@@ -213,7 +219,12 @@ These results are slightly worse than Google's reported errors since we have les
 ### SVR Personalization
 We take the output of the penultimate ReLU layer from the base model and train a per person SVR to provide a personalized result. The SVR leads in a reduction in the overall mean error but there are a few cases where the SVR hurts performance.
 
-<img src="SVRComparison.png"/>
+#### 13 Point Calibration Split
+
+<img src="imgs/SVRComparison.png"/>
+
+#### Google 70/30 Train Test Split
+<img src="imgs/SVRComparisonGoogle.png"/>
 
 ***
 
@@ -227,7 +238,7 @@ Since the Google Architecture does not have any information about orientation of
 * `[1, 0, 0]` for landscape 2
 
 The modified architecture is seen in the image below. 
-<img src="gazeTrackNetMod.jpg"/>
+<img src="imgs/gazeTrackNetMod.jpg"/>
 
 ### Dataset
 To train this network, we used the entire GazeCapture Dataset using only the following filters:
