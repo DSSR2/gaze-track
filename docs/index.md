@@ -286,13 +286,21 @@ The SVR reduces the mean overall error from 1.9187cm to 1.8124cm. This is a good
 <img src="imgs/SVRComparison.png"/>
 
 #### Google 70/30 Train Test Split
-The SVR reduces the mean overall error from 1.9187cm to 
+The SVR reduces the mean overall error from 2.03cm to 1.87cm
 <img src="imgs/SVRComparisonGoogle.png"/>
 
 ### SVR Outputs
-<h4>Examples where SVR helps</h4>
+The figures below show how the SVR improves on the predictions made by the base model. 
 
+The '+' signs are the ground truth gaze locations and the dots are network predictions. Each gaze location has multiple frames associated with it and hence has multiple predictions. To map predictions to their respective ground truth, we use color coding. All dots of a color correspond to the '+' of the same color. The camera is at the origin(the star). To visualize what the SVR is doing, we also plot lines between network predictions and corresponding SVR predictions. 
+
+The SVR training is also plotted for the 13 point calibration data. The patterns learnt in this calibration are applied on the test set. Since there are many points, there is also an easier to view centroid plot. This averages over all the predictions for a single ground truth to give the centroid for that ground truth.
+
+<h4>Examples where SVR helps</h4>
+<img src="imgs/SVRGood1.png"/>
+<img src="imgs/SVRGood2.png"/>
 <h4>Examples where SVR hurts</h4>
+<img src="imgs/SVRBad1.png"/>
 
 ***
 
