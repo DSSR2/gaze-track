@@ -37,23 +37,16 @@ def split_dataset(files, out_root):
 
 
         try:
-            train_dots, test_dots = train_test_split(un_pts, test_size=0.25)
+            train_dots, test_dots = train_test_split(un_pts, test_size=0.3)
         except:
-            train_dots = un_pts
-            test_dots = []
-        try:
-            test_dots, val_dots = train_test_split(test_dots, test_size=0.3)
-        except:
-            val_dots = []
+            # Not enough data
+            continue
 
         for td in train_dots:
             cl_pts[np.where((td==all_pts).all(axis=1))[0]] = 1
 
         for td in test_dots:
             cl_pts[np.where((td==all_pts).all(axis=1))[0]] = 2
-
-        for td in val_dots:
-            cl_pts[np.where((td==all_pts).all(axis=1))[0]] = 3
 
         for k in range(len(cl_pts)):
             of = out_root
@@ -63,17 +56,14 @@ def split_dataset(files, out_root):
             elif(cl_pts[k] == 2):
                 shutil.copy(lf[k], of+"/test/meta/")
                 shutil.copy(lf[k].replace("meta", 'images').replace('json', 'jpg'), of+"/test/images/")
-            elif(cl_pts[k] == 3):
-                shutil.copy(lf[k], of+"/val/meta/")
-                shutil.copy(lf[k].replace("meta", 'images').replace('json', 'jpg'), of+"/val/images/")        
+                
 def add_ttv(path):
     os.mkdir(path+"/train/")
-    os.mkdir(path+"/val/")
     os.mkdir(path+"/test/")
+    
     os.mkdir(path+"/train/images/")
     os.mkdir(path+"/train/meta/")
-    os.mkdir(path+"/val/images/")
-    os.mkdir(path+"/val/meta/")
+    
     os.mkdir(path+"/test/images")
     os.mkdir(path+"/test/meta")
     
