@@ -294,13 +294,14 @@ The figures below show how the SVR improves on the predictions made by the base 
 
 The '+' signs are the ground truth gaze locations and the dots are network predictions. Each gaze location has multiple frames associated with it and hence has multiple predictions. To map predictions to their respective ground truth, we use color coding. All dots of a color correspond to the '+' of the same color. The camera is at the origin(the star). To visualize what the SVR is doing, we also plot lines between network predictions and corresponding SVR predictions. 
 
-The SVR training is also plotted for the 13 point calibration data. The patterns learnt in this calibration are applied on the test set. Since there are many points, there is also an easier to view centroid plot. This averages over all the predictions for a single ground truth to give the centroid for that ground truth.
+The SVR training is also plotted for the 13 point calibration data. The patterns learnt in this calibration are applied on the test set. Since there are many points, there is also an easier to view centroid plot. This averages all the predictions for a single ground truth to give the centroid of the predictions for that ground truth.
 
 <h4>Examples where SVR helps</h4>
 <img src="imgs/SVRGood1.png"/>
 <img src="imgs/SVRGood2.png"/>
 <h4>Examples where SVR hurts</h4>
 <img src="imgs/SVRBad1.png"/>
+<img src="imgs/SVRBad2.png"/>
 
 ***
 
@@ -334,6 +335,8 @@ Details of the dataset:
 We again use PyTorch Lightning. The percentage of dropout during training is increased throughout the architecture. Different schedulers and optimizers were tried and the best performing model was obtained using the Adam Optimizer and a ReduceLRonPlateau scheduler. 
 
 ### Results
+The best model gave a mean Euclidian error of 2.01cm. The model that produced this is provided in [/Experiments/Checkpoints/checkpoint.ckpt](https://github.com/DSSR2/gaze-track/blob/main/Experiments/Checkpoints/checkpoint.ckpt)
+
 The error of 2.01cm is even lower than GazeCapture's error when they do not use any augmentation! This goes to show the power of this architecture. This architecture has ~150K parameters while the GazeCapture dataset has ~7M parameters. 
 
 While the error in centimetres is very low, it looks like the network has learned a "cheat" solution.
