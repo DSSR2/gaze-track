@@ -31,7 +31,10 @@ class gazetrack_dataset(Dataset):
         with open(self.files[idx].replace('.jpg','.json').replace('images', 'meta')) as f:
             meta = json.load(f)
         w, h = image.size
-        orientation = meta['orientation']
+        try:
+            orientation = meta['orientation']
+        except:
+            orientation = 1
         if(orientation==1):
             orientation = [0, 0, 1]
         elif(orientation==3):
