@@ -380,3 +380,6 @@ This remains an open problem and could lead to interesting insights on how the n
 *** 
 
 ## Acknowledgements
+I'd like to thank my awesome mentors [Dr. Suresh Krishna](https://www.mcgill.ca/physiology/directory/core-faculty/suresh-krishna) and [Dr. Vineet Gandhi](https://faculty.iiit.ac.in/~vgandhi/index.html#Misc). 
+
+This project was carried out as a part of Google Summer of Code 2021.
