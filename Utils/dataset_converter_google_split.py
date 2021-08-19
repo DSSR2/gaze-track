@@ -73,13 +73,10 @@ def convert_dataset(files, out_root):
             fname = str(frame_idx).zfill(5)
             if(split_ids[frame_idx]==1):
                 outdir = out_root+'/train/'
-                outdir2 = out_root+'_hf/train/'
             elif(split_ids[frame_idx]==2):
                 outdir = out_root+'/test/'
-                outdir2 = out_root+'_hf/test/'
             elif(split_ids[frame_idx]==3):
                 outdir = out_root+'/val/'
-                outdir2 = out_root+'_hf/val/'
             
             meta = {}
             meta['device'] = device
@@ -90,13 +87,6 @@ def convert_dataset(files, out_root):
             meta['reye_x'], meta['reye_y'], meta['reye_w'], meta['reye_h'] = meta['face_x']+round(r_eye_det['X'][frame_idx]), meta['face_y']+round(r_eye_det['Y'][frame_idx]), round(r_eye_det['W'][frame_idx]), round(r_eye_det['H'][frame_idx])
             meta['dot_xcam'], meta['dot_y_cam'] = dot['XCam'][frame_idx], dot['YCam'][frame_idx]
             meta['dot_x_pix'], meta['dot_y_pix'] = dot['XPts'][frame_idx], dot['YPts'][frame_idx]
-            
-            # Copy cases where face portion is more than 50% of the image to a seaparte folder
-            if((meta['face_w']*meta['face_h']) > (0.5*meta['screen_h']*meta['screen_w'])):
-                shutil.copy(i+'/frames/'+fname+".jpg", outdir2+"/images/"+expt_name+'__'+fname+'.jpg')
-                meta_file = outdir2+'/meta/'+expt_name+'__'+fname+'.json'
-                with open(meta_file, 'w') as outfile:
-                    json.dump(meta, outfile)
 
             shutil.copy(i+'/frames/'+fname+".jpg", outdir+"/images/"+expt_name+'__'+fname+'.jpg')            
             meta_file = outdir+'/meta/'+expt_name+'__'+fname+'.json'
