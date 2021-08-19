@@ -376,6 +376,15 @@ This remains an open problem and could lead to interesting insights on how the n
 ***
 
 ## References
+```
+1. Eye Tracking for Everyone
+K.Krafka*, A. Khosla*, P. Kellnhofer, H. Kannan, S. Bhandarkar, W. Matusik and A. Torralba
+IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016
+
+2.Accelerating eye movement research via accurate and affordable smartphone eye tracking.
+Valliappan, N., Dai, N., Steinberg, E., He, J., Rogers, K., Ramachandran, V., Xu, P., Shojaeizadeh, M., Guo, L., Kohlhoff, K. and Navalpakkam, V.
+Nature communications, 2020
+```
 
 *** 
 
