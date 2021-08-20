@@ -23,6 +23,7 @@ Please use this index to quickly jump to the portions that interest you most.
     + [13 Point Calibration Split](#13-point-calibration-split)
     + [Google 70/30 Train Test Split](#google-70-30-train-test-split)
   * [SVR Outputs](#svr-outputs)
+  * [Affine Transform Based Personalization](#affine-transform-based-personalization)
 - [Experiments](#experiments)
   * [Network Architecture](#network-architecture)
   * [Dataset](#dataset)
