@@ -303,6 +303,15 @@ The SVR training is also plotted for the 13 point calibration data. The patterns
 <img src="imgs/SVRBad1.png"/>
 <img src="imgs/SVRBad2.png"/>
 
+### Affine Transform Based Personalization
+Looking at the predictions of the network, it seems like a simple affine transform can also be learnt that can improve accuracy. We use the network predictions of the frames related to the 13 point calibration data to learn an affine transform. 
+
+The allowed operations in an affine transform are shifting, scaling and rotating. 
+
+Interestingly, the affine transform improves the base model error from 1.91cm to 1.859cm! While this delta is smaller than the delta we obtained with SVR training, the result is still significant. 
+
+<img src="imgs/AffineTest.png"/>
+
 ***
 
 ## Experiments
