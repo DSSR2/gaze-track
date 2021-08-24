@@ -42,7 +42,7 @@ def add_kps(files, p):
         kps = predictor(bw_img, face_rect)
         
         # make sure the detected landmark point are within the eye bounding box.
-        if(in_box((reye_x-buffer, reye_y-buffer, reye_w+(buffer*2), reye_h+(buffer*20)), (kps.part(36).x, kps.part(36).y)) 
+        if(in_box((reye_x-buffer, reye_y-buffer, reye_w+(buffer*2), reye_h+(buffer*2)), (kps.part(36).x, kps.part(36).y)) 
            and in_box((reye_x-buffer, reye_y-buffer, reye_w+(buffer*2), reye_h*(buffer*2)), (kps.part(39).x, kps.part(39).y))):
             
             meta['reye_x1'], meta['reye_y1'], meta['reye_x2'], meta['reye_y2'] = kps.part(36).x, kps.part(36).y, kps.part(39).x, kps.part(39).y
