@@ -15,6 +15,15 @@ parser.add_argument('--dir', default='./dataset/', help='Path to converted datas
 parser.add_argument('--workers', default=40, type=int, help='Number of CPU cores available')
 parser.add_argument('--p', default="./shape_predictor_68_face_landmarks.dat", help='Path to trained facial landmark model file')
 
+def in_box(box, point):
+    x1, y1, w, h = box
+    x2, y2 = x1+w, y1+h
+    x, y = point
+    if (x1 < x and x < x2):
+        if (y1 < y and y < y2):
+            return True
+    return False
+
 def add_kps(files, p):
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(p)
