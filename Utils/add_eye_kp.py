@@ -4,6 +4,7 @@ import json
 import dlib
 from glob import glob 
 from multiprocessing import Pool, Process
+from tqdm import tqdm
 
 '''
 Add eye landmarks to the MIT Gaze Capture Dataset using DLib
